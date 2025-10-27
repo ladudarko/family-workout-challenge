@@ -621,7 +621,7 @@ app.get('/api/admin/weights', authenticateToken, (req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const clientPath = path.join(__dirname, 'client/dist');
+  const clientPath = path.join(process.cwd(), 'client/dist');
   app.use(express.static(clientPath));
   
   app.get('*', (req, res) => {
