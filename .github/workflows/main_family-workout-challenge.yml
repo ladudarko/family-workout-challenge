@@ -31,11 +31,13 @@ jobs:
     - name: Prepare deployment package
       run: |
         mkdir -p deploy
+        mkdir -p deploy/client/dist
         cp -r server/* deploy/
-        cp -r client/dist deploy/client/
+        cp -r client/dist/* deploy/client/dist/
         cp server/package.json deploy/
         cp server/package-lock.json deploy/ || true
         cd deploy && npm install --production
+        echo "Deploy structure:" && ls -la && echo "Client structure:" && ls -la client/
     
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
