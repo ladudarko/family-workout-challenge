@@ -30,17 +30,19 @@ jobs:
     
     - name: Prepare deployment package
       run: |
-        mkdir -p deploy
-        cp -r server/* deploy/
-        cp -r client/dist deploy/public
-        cp server/package.json deploy/
-        cp server/package-lock.json deploy/ || true
-        cd deploy && npm install --production
+        mkdir -p deploy/server
+        mkdir -p deploy/client
+        cp -r server/* deploy/server/
+        cp -r client/dist deploy/client/
+        cp server/package.json deploy/server/
+        cp server/package-lock.json deploy/server/ || true
+        cd deploy/server && npm install --production
+        cd ..
     
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
         app-name: 'family-workout-challenge'
-        package: './deploy'
+        package: './deploy/server'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
