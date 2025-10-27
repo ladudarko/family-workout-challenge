@@ -28,9 +28,8 @@ jobs:
       run: |
         cd client && npm run build
     
-    - name: Azure WebApp Deploy
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v4
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
       with:
         app-name: 'family-workout-challenge'
         package: .
