@@ -621,10 +621,12 @@ app.get('/api/admin/weights', authenticateToken, (req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const clientPath = path.join(process.cwd(), 'client/dist');
+  const clientPath = path.join(__dirname, 'client/dist');
+  console.log('Serving client from:', clientPath);
   app.use(express.static(clientPath));
   
   app.get('*', (req, res) => {
+    console.log('Serving index.html from:', path.join(clientPath, 'index.html'));
     res.sendFile(path.join(clientPath, 'index.html'));
   });
 }
