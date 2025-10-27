@@ -39,4 +39,3 @@ jobs:
         app-name: 'family-workout-challenge'
         package: .
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-
