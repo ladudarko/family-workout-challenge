@@ -463,16 +463,31 @@ app.get('/api/leaderboard', authenticateToken, (req, res) => {
     SELECT 
       u.name,
       u.username,
-      COUNT(a.id) as total_activities,
-      SUM(a.duration) as total_duration,
-      COUNT(DISTINCT a.date) as active_days,
-      SUM(a.points) as activity_points,
-      COALESCE(SUM(dc.total_points), 0) as checklist_points,
-      (SUM(a.points) + COALESCE(SUM(dc.total_points), 0)) as total_points
+      COALESCE(activity_stats.total_activities, 0) as total_activities,
+      COALESCE(activity_stats.total_duration, 0) as total_duration,
+      COALESCE(activity_stats.active_days, 0) as active_days,
+      COALESCE(activity_stats.activity_points, 0) as activity_points,
+      COALESCE(checklist_stats.checklist_points, 0) as checklist_points,
+      (COALESCE(activity_stats.activity_points, 0) + COALESCE(checklist_stats.checklist_points, 0)) as total_points
     FROM users u
-    LEFT JOIN activities a ON u.id = a.user_id
-    LEFT JOIN daily_checklist dc ON u.id = dc.user_id AND dc.is_completed = 1
-    GROUP BY u.id, u.name, u.username
+    LEFT JOIN (
+      SELECT 
+        user_id,
+        COUNT(id) as total_activities,
+        SUM(duration) as total_duration,
+        COUNT(DISTINCT date) as active_days,
+        SUM(points) as activity_points
+      FROM activities
+      GROUP BY user_id
+    ) activity_stats ON u.id = activity_stats.user_id
+    LEFT JOIN (
+      SELECT 
+        user_id,
+        SUM(total_points) as checklist_points
+      FROM daily_checklist
+      WHERE is_completed = 1
+      GROUP BY user_id
+    ) checklist_stats ON u.id = checklist_stats.user_id
     ORDER BY total_points DESC, total_activities DESC
   `;
 
