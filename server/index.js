@@ -471,7 +471,7 @@ app.get('/api/leaderboard', authenticateToken, (req, res) => {
       (SUM(a.points) + COALESCE(SUM(dc.total_points), 0)) as total_points
     FROM users u
     LEFT JOIN activities a ON u.id = a.user_id
-    LEFT JOIN daily_checklist dc ON u.id = dc.user_id
+    LEFT JOIN daily_checklist dc ON u.id = dc.user_id AND dc.is_completed = 1
     GROUP BY u.id, u.name, u.username
     ORDER BY total_points DESC, total_activities DESC
   `;
