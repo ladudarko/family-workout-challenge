@@ -165,7 +165,7 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
           🏆 Your Points
         </h3>
         <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#28a745' }}>
-          {isCompleted ? totalPoints : calculatePoints()}
+          {isCompleted ? (checklist.total_points || 0) : calculatePoints()}
         </div>
         <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
           {isCompleted ? 'Daily checklist completed!' : 'Complete items to earn points'}
@@ -229,7 +229,7 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
         }}>
           <strong style={{ color: '#155724' }}>✅ Daily Checklist Completed!</strong>
           <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#155724' }}>
-            Great job! You earned {totalPoints} points today! 🎉
+            Great job! You earned {checklist.total_points || 0} points today! 🎉
           </p>
         </div>
       )}
