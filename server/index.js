@@ -364,24 +364,16 @@ app.post('/api/daily-checklist', authenticateToken, (req, res) => {
     return res.status(400).json({ error: 'Date is required' });
   }
 
-  // Calculate total points
-  const totalPoints = 
-    (workout_30min ? 10 : 0) +
-    (workout_extra_15min ? 5 : 0) +
-    (family_group_workout ? 10 : 0) +
-    (water_82oz ? 5 : 0) +
-    (sleep_6hours ? 5 : 0) +
-    (personal_goal_hit ? 10 : 0);
-
   // Use INSERT OR REPLACE to handle both new and existing records
+  // Don't calculate points here - only store the checkbox states
   db.run(
     `INSERT OR REPLACE INTO daily_checklist 
      (user_id, date, workout_30min, workout_extra_15min, family_group_workout, 
       water_82oz, sleep_6hours, personal_goal_hit, total_points, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP)`,
     [userId, date, workout_30min || false, workout_extra_15min || false, 
      family_group_workout || false, water_82oz || false, sleep_6hours || false, 
-     personal_goal_hit || false, totalPoints],
+     personal_goal_hit || false],
     function(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -398,7 +390,7 @@ app.post('/api/daily-checklist', authenticateToken, (req, res) => {
           water_82oz: water_82oz || false,
           sleep_6hours: sleep_6hours || false,
           personal_goal_hit: personal_goal_hit || false,
-          total_points: totalPoints
+          total_points: 0  // Points only calculated when completing
         }
       });
     }
