@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { getCurrentDateEST } from '../utils/dateUtils';
 
 const ActivityForm = ({ onActivityAdded }) => {
   const [formData, setFormData] = useState({
     activity_type: '',
     duration: '',
     notes: '',
-    date: new Date().toISOString().split('T')[0]
+    date: getCurrentDateEST()
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -55,7 +56,7 @@ const ActivityForm = ({ onActivityAdded }) => {
         activity_type: '',
         duration: '',
         notes: '',
-        date: new Date().toISOString().split('T')[0]
+        date: getCurrentDateEST()
       });
     } catch (error) {
       setMessage(error.response?.data?.error || 'Error adding activity');

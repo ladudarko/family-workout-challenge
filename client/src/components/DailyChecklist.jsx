@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getCurrentDateEST, formatDateEST } from '../utils/dateUtils';
 
 const DailyChecklist = ({ onChecklistUpdated }) => {
   const [checklist, setChecklist] = useState({
@@ -12,7 +13,7 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getCurrentDateEST());
   const [isCompleted, setIsCompleted] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
 

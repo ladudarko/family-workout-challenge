@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { getCurrentDateEST, formatDateEST, parseDateEST } from '../utils/dateUtils';
 
 const WeightTracker = ({ user }) => {
   const [weight, setWeight] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getCurrentDateEST());
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [weightHistory, setWeightHistory] = useState([]);
@@ -26,7 +27,7 @@ const WeightTracker = ({ user }) => {
       // Find initial weight (first entry chronologically)
       if (response.data.length > 0) {
         const sortedWeights = [...response.data].sort((a, b) => 
-          new Date(a.date) - new Date(b.date)
+          parseDateEST(a.date) - parseDateEST(b.date)
         );
         setInitialWeight(sortedWeights[0].weight_lbs);
         setCurrentWeight(response.data[0].weight_lbs);
@@ -173,7 +174,7 @@ const WeightTracker = ({ user }) => {
               <div key={entry.id} className="activity-item">
                 <div className="activity-info">
                   <h4>{entry.weight_lbs.toFixed(1)} lbs</h4>
-                  <p>{new Date(entry.date).toLocaleDateString('en-US', {
+                  <p>{formatDateEST(entry.date, {
                     weekday: 'short',
                     year: 'numeric',
                     month: 'short',

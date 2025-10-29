@@ -1,9 +1,9 @@
 import React from 'react';
+import { formatDateEST } from '../utils/dateUtils';
 
 const ActivityList = ({ activities }) => {
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return formatDateEST(dateString, {
       weekday: 'short',
       year: 'numeric',
       month: 'short',

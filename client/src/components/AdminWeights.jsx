@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { parseDateEST } from '../utils/dateUtils';
 
 const AdminWeights = () => {
   const [allWeights, setAllWeights] = useState([]);
@@ -31,7 +32,7 @@ const AdminWeights = () => {
       Object.keys(userWeights).forEach(userId => {
         const user = userWeights[userId];
         const sortedWeights = [...user.weights].sort((a, b) => 
-          new Date(a.date) - new Date(b.date)
+          parseDateEST(a.date) - parseDateEST(b.date)
         );
         
         if (sortedWeights.length > 0) {
