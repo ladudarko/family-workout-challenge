@@ -640,6 +640,68 @@ app.get('/api/admin/weights', authenticateToken, (req, res) => {
   );
 });
 
+// Admin endpoint: Reset user password
+app.post('/api/admin/reset-password', authenticateToken, async (req, res) => {
+  const adminId = req.user.id;
+  const { username, newPassword } = req.body;
+
+  // Check if user is admin
+  db.get(
+    'SELECT is_admin FROM users WHERE id = ?',
+    [adminId],
+    async (err, user) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      if (!user || !user.is_admin) {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+
+      if (!username || !newPassword) {
+        return res.status(400).json({ error: 'Username and new password are required' });
+      }
+
+      // Check if target user exists
+      db.get(
+        'SELECT id, username, name FROM users WHERE username = ?',
+        [username],
+        async (err, targetUser) => {
+          if (err) {
+            return res.status(500).json({ error: 'Database error' });
+          }
+
+          if (!targetUser) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+
+          // Hash the new password
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+          // Update password
+          db.run(
+            'UPDATE users SET password = ? WHERE username = ?',
+            [hashedPassword, username],
+            function(err) {
+              if (err) {
+                return res.status(500).json({ error: 'Database error' });
+              }
+
+              res.json({
+                message: 'Password reset successfully',
+                user: {
+                  username: targetUser.username,
+                  name: targetUser.name
+                }
+              });
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   const clientPath = path.join(__dirname, 'client/dist');
