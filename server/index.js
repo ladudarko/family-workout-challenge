@@ -488,6 +488,7 @@ app.get('/api/leaderboard', authenticateToken, (req, res) => {
       WHERE is_completed = 1
       GROUP BY user_id
     ) checklist_stats ON u.id = checklist_stats.user_id
+    WHERE u.is_admin = 0 OR u.is_admin IS NULL
     ORDER BY total_points DESC, total_activities DESC
   `;
 
