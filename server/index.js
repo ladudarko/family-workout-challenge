@@ -73,6 +73,13 @@ db.serialize(() => {
     }
   });
 
+  // Add no_alcohol column to existing daily_checklist table if it doesn't exist
+  db.run(`ALTER TABLE daily_checklist ADD COLUMN no_alcohol BOOLEAN DEFAULT 0`, (err) => {
+    if (err && !err.message.includes('duplicate column name')) {
+      console.error('Error adding no_alcohol column:', err);
+    }
+  });
+
   // Weight tracking table
   db.run(`CREATE TABLE IF NOT EXISTS weight_tracking (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -338,6 +345,7 @@ app.get('/api/daily-checklist', authenticateToken, (req, res) => {
           water_82oz: false,
           sleep_6hours: false,
           personal_goal_hit: false,
+          no_alcohol: false,
           total_points: 0
         });
       } else {
@@ -357,7 +365,8 @@ app.post('/api/daily-checklist', authenticateToken, (req, res) => {
     family_group_workout, 
     water_82oz, 
     sleep_6hours, 
-    personal_goal_hit 
+    personal_goal_hit,
+    no_alcohol
   } = req.body;
 
   if (!date) {
@@ -369,11 +378,11 @@ app.post('/api/daily-checklist', authenticateToken, (req, res) => {
   db.run(
     `INSERT OR REPLACE INTO daily_checklist 
      (user_id, date, workout_30min, workout_extra_15min, family_group_workout, 
-      water_82oz, sleep_6hours, personal_goal_hit, total_points, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP)`,
+      water_82oz, sleep_6hours, personal_goal_hit, no_alcohol, total_points, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP)`,
     [userId, date, workout_30min || false, workout_extra_15min || false, 
      family_group_workout || false, water_82oz || false, sleep_6hours || false, 
-     personal_goal_hit || false],
+     personal_goal_hit || false, no_alcohol || false],
     function(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -390,6 +399,7 @@ app.post('/api/daily-checklist', authenticateToken, (req, res) => {
           water_82oz: water_82oz || false,
           sleep_6hours: sleep_6hours || false,
           personal_goal_hit: personal_goal_hit || false,
+          no_alcohol: no_alcohol || false,
           total_points: 0  // Points only calculated when completing
         }
       });
@@ -407,7 +417,8 @@ app.post('/api/daily-checklist/complete', authenticateToken, (req, res) => {
     family_group_workout, 
     water_82oz, 
     sleep_6hours, 
-    personal_goal_hit 
+    personal_goal_hit,
+    no_alcohol
   } = req.body;
 
   if (!date) {
@@ -421,17 +432,18 @@ app.post('/api/daily-checklist/complete', authenticateToken, (req, res) => {
     (family_group_workout ? 10 : 0) +
     (water_82oz ? 5 : 0) +
     (sleep_6hours ? 5 : 0) +
-    (personal_goal_hit ? 10 : 0);
+    (personal_goal_hit ? 10 : 0) +
+    (no_alcohol ? 10 : 0);
 
   // Use INSERT OR REPLACE to handle both new and existing records
   db.run(
     `INSERT OR REPLACE INTO daily_checklist 
      (user_id, date, workout_30min, workout_extra_15min, family_group_workout, 
-      water_82oz, sleep_6hours, personal_goal_hit, total_points, is_completed, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)`,
+      water_82oz, sleep_6hours, personal_goal_hit, no_alcohol, total_points, is_completed, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)`,
     [userId, date, workout_30min || false, workout_extra_15min || false, 
      family_group_workout || false, water_82oz || false, sleep_6hours || false, 
-     personal_goal_hit || false, totalPoints],
+     personal_goal_hit || false, no_alcohol || false, totalPoints],
     function(err) {
       if (err) {
         return res.status(500).json({ error: 'Database error' });
@@ -448,6 +460,7 @@ app.post('/api/daily-checklist/complete', authenticateToken, (req, res) => {
           water_82oz: water_82oz || false,
           sleep_6hours: sleep_6hours || false,
           personal_goal_hit: personal_goal_hit || false,
+          no_alcohol: no_alcohol || false,
           total_points: totalPoints,
           is_completed: true
         },

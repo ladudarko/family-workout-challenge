@@ -14,7 +14,7 @@ const ActivityForm = ({ onActivityAdded }) => {
 
   const activityTypes = [
     'Running',
-    'Walking',
+    'Walking > 10 mins',
     'Cycling',
     'Swimming',
     'Weight Training',
@@ -25,8 +25,6 @@ const ActivityForm = ({ onActivityAdded }) => {
     'Basketball',
     'Soccer',
     'Tennis',
-    'Sleep',
-    'Drinking Water',
     'Other'
   ];
 

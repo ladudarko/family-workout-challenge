@@ -9,7 +9,8 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
     family_group_workout: false,
     water_82oz: false,
     sleep_6hours: false,
-    personal_goal_hit: false
+    personal_goal_hit: false,
+    no_alcohol: false
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -89,7 +90,8 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
       (checklist.family_group_workout ? 10 : 0) +
       (checklist.water_82oz ? 5 : 0) +
       (checklist.sleep_6hours ? 5 : 0) +
-      (checklist.personal_goal_hit ? 10 : 0)
+      (checklist.personal_goal_hit ? 10 : 0) +
+      (checklist.no_alcohol ? 10 : 0)
     );
   };
 
@@ -129,6 +131,12 @@ const DailyChecklist = ({ onChecklistUpdated }) => {
       label: 'Hit a personal goal (PR, extra reps, etc.)',
       points: 10,
       emoji: '🎯'
+    },
+    {
+      key: 'no_alcohol',
+      label: 'No Alcohol',
+      points: 10,
+      emoji: '🚫'
     }
   ];
 
