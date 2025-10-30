@@ -80,6 +80,13 @@ db.serialize(() => {
     }
   });
 
+  // Add family_group_photo column to existing daily_checklist table if it doesn't exist
+  db.run(`ALTER TABLE daily_checklist ADD COLUMN family_group_photo BOOLEAN DEFAULT 0`, (err) => {
+    if (err && !err.message.includes('duplicate column name')) {
+      console.error('Error adding family_group_photo column:', err);
+    }
+  });
+
   // Weight tracking table
   db.run(`CREATE TABLE IF NOT EXISTS weight_tracking (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

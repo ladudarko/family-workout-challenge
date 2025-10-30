@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
+import Countdown from './components/Countdown';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,7 +55,21 @@ function App() {
     <div className="container">
       <div className="header" style={{ position: 'relative' }}>
         <h1>🏃‍♀️ Family Workout Challenge</h1>
-        <p>Track your daily activities and compete with your family!</p>
+        <div style={{ margin: '10px 0' }}>
+          <Countdown endDate={'2025-11-28T23:59:59'} />
+        </div>
+        <div style={{
+          background: '#222',
+          color: '#fff',
+          border: '1px solid #444',
+          padding: '12px 16px',
+          borderRadius: '6px',
+          display: 'inline-block',
+          fontSize: '20px',
+          fontWeight: 700
+        }}>
+          3 day water fast begins soon
+        </div>
         {user && (
           <button className="logout-btn-header" onClick={handleLogout}>
             🚪 Sign Out ({user.name})
