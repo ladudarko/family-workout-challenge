@@ -56,7 +56,7 @@ function App() {
       <div className="header" style={{ position: 'relative' }}>
         <h1>🏃‍♀️ Family Workout Challenge</h1>
         <div style={{ margin: '10px 0' }}>
-          <Countdown endDate={'2025-11-28T23:59:59'} />
+          <Countdown endDate={'2025-11-28T23:59:59-05:00'} label="Challenge ends in:" />
         </div>
         <div style={{
           background: '#222',
@@ -66,9 +66,10 @@ function App() {
           borderRadius: '6px',
           display: 'inline-block',
           fontSize: '20px',
-          fontWeight: 700
+          fontWeight: 700,
+          marginTop: '10px'
         }}>
-          3 day water fast begins soon
+          3 day water fast begins in: <Countdown startDate={'2025-11-26T00:00:00-05:00'} />
         </div>
         {user && (
           <button className="logout-btn-header" onClick={handleLogout}>
