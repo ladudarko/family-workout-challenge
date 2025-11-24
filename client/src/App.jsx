@@ -69,7 +69,7 @@ function App() {
           fontWeight: 700,
           marginTop: '10px'
         }}>
-          3 day water fast begins in: <Countdown startDate={'2025-11-26T00:00:00-05:00'} />
+          3 day water fast<Countdown startDate={'2025-11-26T00:00:00-05:00'} />
         </div>
         {user && (
           <button className="logout-btn-header" onClick={handleLogout}>
